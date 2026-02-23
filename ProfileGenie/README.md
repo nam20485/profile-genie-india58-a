@@ -20,15 +20,17 @@ A modern profile management application built with .NET 9.0, Blazor Server, and 
 ProfileGenie/
 ├── src/
 │   ├── ProfileGenie.Core/           # Domain logic, entities, services
-│   ├── ProfileGenie.Api/            # REST API endpoints
-│   ├── ProfileGenie.Frontend/       # Blazor Server UI
+│   ├── ProfileGenie.Data/           # PostgreSQL / EF Core data access
+│   ├── ProfileGenie.ApiService/     # REST API endpoints
+│   ├── ProfileGenie.PlaywrightService/ # Browser automation service
+│   ├── ProfileGenie.Web/            # Blazor Server UI
 │   ├── ProfileGenie.Shared/         # Shared DTOs, contracts
 │   ├── ProfileGenie.ServiceDefaults/ # Aspire service defaults
 │   └── ProfileGenie.AppHost/        # .NET Aspire host
 ├── tests/
 │   ├── ProfileGenie.Core.Tests/
-│   ├── ProfileGenie.Api.Tests/
-│   └── ProfileGenie.Frontend.Tests/
+│   ├── ProfileGenie.ApiService.Tests/
+│   └── ProfileGenie.Web.Tests/
 └── assets/
 ```
 
@@ -72,10 +74,10 @@ dotnet test
 
 ```bash
 # Run the API
-dotnet run --project src/ProfileGenie.Api
+dotnet run --project src/ProfileGenie.ApiService
 
-# Run the Frontend (in another terminal)
-dotnet run --project src/ProfileGenie.Frontend
+# Run the Web frontend (in another terminal)
+dotnet run --project src/ProfileGenie.Web
 ```
 
 #### Option B: Run with Aspire (requires workload)
@@ -100,7 +102,7 @@ docker-compose up -d
 ### Database Migrations
 
 ```bash
-cd src/ProfileGenie.Api
+cd src/ProfileGenie.Data
 dotnet ef migrations add InitialCreate
 dotnet ef database update
 ```
@@ -128,8 +130,8 @@ When running the API, access Swagger UI at:
 ### appsettings.json
 
 Configuration files are located in each project's directory:
-- `src/ProfileGenie.Api/appsettings.json`
-- `src/ProfileGenie.Frontend/appsettings.json`
+- `src/ProfileGenie.ApiService/appsettings.json`
+- `src/ProfileGenie.Web/appsettings.json`
 
 ## Testing
 
@@ -149,7 +151,7 @@ dotnet test --filter "Category=Integration"
 
 ```bash
 # Install Playwright browsers
-pwsh tests/ProfileGenie.Frontend.Tests/playwright.ps1 install
+pwsh tests/ProfileGenie.Web.Tests/playwright.ps1 install
 
 # Run Playwright tests
 dotnet test --filter "Category=E2E"

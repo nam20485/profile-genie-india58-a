@@ -12,11 +12,11 @@
 | Item | Value |
 |------|-------|
 | Language | C# / .NET 9.0 |
-| Frontend | Blazor Server (`ProfileGenie.Frontend`) |
-| Backend API | ASP.NET Core Web API (`ProfileGenie.Api`) |
+| Frontend | Blazor Server (`ProfileGenie.Web`) |
+| Backend API | ASP.NET Core Web API (`ProfileGenie.ApiService`) |
+| Data Access | PostgreSQL / EF Core (`ProfileGenie.Data`) |
+| Browser Automation | Playwright (`ProfileGenie.PlaywrightService`) |
 | Orchestration | .NET Aspire (`ProfileGenie.AppHost`) |
-| Database | PostgreSQL (via Entity Framework Core) |
-| Browser Automation | Playwright |
 | Authentication | ASP.NET Core Identity + JWT |
 | Real-time | SignalR (stretch goal: Interactive Fallback Mode) |
 | Testing | xUnit, FluentAssertions, Moq, bUnit, Playwright |
@@ -28,16 +28,18 @@
 ```
 ProfileGenie/
 ├── src/
-│   ├── ProfileGenie.Core/           # Domain entities, interfaces, services
-│   ├── ProfileGenie.Api/            # REST API controllers + Swagger
-│   ├── ProfileGenie.Frontend/       # Blazor Server UI components
-│   ├── ProfileGenie.Shared/         # Shared DTOs and contracts
-│   ├── ProfileGenie.ServiceDefaults/ # Aspire service defaults (telemetry, health)
-│   └── ProfileGenie.AppHost/        # .NET Aspire orchestration host
+│   ├── ProfileGenie.Core/              # Domain entities, interfaces, services
+│   ├── ProfileGenie.Data/              # PostgreSQL / EF Core data access
+│   ├── ProfileGenie.ApiService/        # REST API controllers + Swagger
+│   ├── ProfileGenie.PlaywrightService/ # Browser automation (Scout Agent)
+│   ├── ProfileGenie.Web/               # Blazor Server UI components
+│   ├── ProfileGenie.Shared/            # Shared DTOs and contracts
+│   ├── ProfileGenie.ServiceDefaults/   # Aspire service defaults (telemetry, health)
+│   └── ProfileGenie.AppHost/           # .NET Aspire orchestration host
 └── tests/
-    ├── ProfileGenie.Core.Tests/      # xUnit unit tests for domain logic
-    ├── ProfileGenie.Api.Tests/       # xUnit integration tests for API
-    └── ProfileGenie.Frontend.Tests/  # bUnit + Playwright E2E tests
+    ├── ProfileGenie.Core.Tests/        # xUnit unit tests for domain logic
+    ├── ProfileGenie.ApiService.Tests/  # xUnit integration tests for API
+    └── ProfileGenie.Web.Tests/         # bUnit + Playwright E2E tests
 ```
 
 ---
@@ -78,7 +80,7 @@ dotnet build
 dotnet build -c Release
 
 # Build a single project
-dotnet build src/ProfileGenie.Api
+dotnet build src/ProfileGenie.ApiService
 ```
 
 ---
@@ -89,10 +91,10 @@ dotnet build src/ProfileGenie.Api
 
 ```bash
 # Terminal 1 — API
-dotnet run --project src/ProfileGenie.Api
+dotnet run --project src/ProfileGenie.ApiService
 
-# Terminal 2 — Frontend
-dotnet run --project src/ProfileGenie.Frontend
+# Terminal 2 — Web
+dotnet run --project src/ProfileGenie.Web
 ```
 
 ### Option B — .NET Aspire (recommended)
@@ -130,7 +132,7 @@ dotnet test --filter "Category!=Integration&Category!=E2E"
 dotnet test --filter "Category=Integration"
 
 # Run Playwright E2E tests
-pwsh tests/ProfileGenie.Frontend.Tests/playwright.ps1 install
+pwsh tests/ProfileGenie.Web.Tests/playwright.ps1 install
 dotnet test --filter "Category=E2E"
 
 # Run tests with coverage report
@@ -145,7 +147,7 @@ do not merge code that reduces coverage for modified paths.
 ## Database Migrations
 
 ```bash
-cd src/ProfileGenie.Api
+cd src/ProfileGenie.Data
 dotnet ef migrations add <MigrationName>
 dotnet ef database update
 ```

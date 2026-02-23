@@ -92,4 +92,4 @@ jobs:
           push: false
           tags: profile-genie:test
           build-args: |
-            PROJECT_PATH=ProfileGenie/src/ProfileGenie.Api
+            PROJECT_PATH=ProfileGenie/src/ProfileGenie.ApiService
